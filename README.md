@@ -78,52 +78,79 @@ Spring Data Neo4j is core part of the Spring Data project which aims to provide 
 It uses Neo4j-OGM (ike Spring Data JPA uses JPA) under the hood and provides functionality known from the Spring Data world, like repositories, derived finders or auditing.
 it offers advanced features to map annotated entity classes to the Neo4j Graph Database.
 
-## Highlight Implementations
+I have written some code to populate db, this function generate random Binary.
 
-Following block code are the core of implementations
+## Build
 
-### Node and NodeInfo Data Models
+### Step 1 (Prerequisite) 
+Installed: Docker, Docker Compose, Maven 3.x
 
-Node Entity which persists in neo4j database server (using neo4j ogm )
-
-```
-@NodeEntity
-public class Node {	
-	@Id
-	@GeneratedValue
-	private Long id;
-	private String name;
-	@Relationship(type = "child_rel", direction = Relationship.OUTGOING)
-	private List<Node> children;
-}
-```
-
-Node information which transferd via REST to the client
+### Step 2 (Config files) 
+### application.properties ( for setting neo4j uri and username and password of neo4j database server )
 
 ```
-public class NodeInfo {
-	private Long nodeId;
-	private String rootName;
-	private String parentName;
-	private Integer height;
-}
-```
-
-Basic queries which used to do actions such as 
-* get parent of given node
-* get children of given node
-* delete relations of current node in order to change parent of given node 
+spring.data.neo4j.uri=bolt://neo4j:7687
+spring.data.neo4j.username=neo4j
+spring.data.neo4j.password=123
 
 ```
-Node findByName(@Param("name") String title);
-
-@Query("MATCH (p)-[r:child_rel]->(n) WHERE n.name = {name} RETURN p")
-Collection<Node> getParent(@Param("name") String name);
-
-@Query("MATCH (p)-[r:child_rel]->(n) WHERE p.name = {name} RETURN n")
-Collection<Node> getChildren(@Param("name") String name);
-
-@Query("MATCH ()-[r:child_rel]-(n) WHERE n.name = {name} DELETE r")
-Collection<Node> deleteRelation(@Param("name") String name);
+### docker-compose.yml ( for setting expose ports and link the containers)
 ```
+version: '2.0'
+
+services:
+  springboot:
+    build: .   
+    container_name: springboot
+    ports:
+      - 8085:8080
+    links:
+      - neo4j
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    ports:
+      - 7474:7474
+      - 7687:7687
+    
+```
+### 
+
+### Step 3 (Build the project)
+
+for creating jar file run the following command :
+```
+mvn clean package -X
+
+```
+for Skiping test run and creating jar file run the following command
+```
+mvn clean package -Dmaven.test.skip=true -X
+
+```
+
+### Step 4 (Deploy and Start the project)
+```
+docker-compose up --build
+
+```
+### Step 5 (check the status of each container)
+```
+docker ps
+
+```
+### result running docker ps:
+```
+CONTAINER ID        IMAGE                                          PORTS                                                      
+bf98f6ab60e8        tradeshift-tree-structure_springboot           0.0.0.0:8085->8080/tcp                                     
+38343d4a6bbf        neo4j:latest                           	   0.0.0.0:7474->7474/tcp, 7473/tcp, 0.0.0.0:7687->7687/tcp  
+
+```                  
+
+## Endpoints
+We have some GET api for doing actions:
+
+
+
+
 
