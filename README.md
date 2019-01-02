@@ -55,6 +55,23 @@ According to my resarch and neo4j site :
 *  Index-free adjacency shortens read time and gets even better as data complexity grows. 
 *  Using Cypher, the world’s most powerful and productive graph query language.
 
+## The Stack
+
+These are the components of our Web Application:
+
+* Application Type: Spring-Boot Java Web Application with Embedded Tomcat.
+
+* Web framework: Spring-Boot enabled Spring-WebMVC, Using Spring Rest Conntrollers.
+
+* Persistence Access: Spring-Data-Neo4j ( using Neo4j-OGM under the hood ).
+
+* Database: Neo4j-Server 3.5.1
+
+* Build tools and dependency managment : Maven
+
+* Container : Using Dockerfile and Docker-compose to deploy the project
+
+
 ## Spring Boot and Spring Data Neo4j
 
 Spring Data Neo4j is core part of the Spring Data project which aims to provide convenient data access for NoSQL databases.
