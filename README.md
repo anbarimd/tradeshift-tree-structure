@@ -55,16 +55,38 @@ According to my resarch and neo4j site :
 *  Index-free adjacency shortens read time and gets even better as data complexity grows. 
 *  Using Cypher, the world’s most powerful and productive graph query language.
 
+## The Stack
+
+These are the components of our Web Application:
+
+* Application Type: Spring-Boot Java Web Application with Embedded Tomcat.
+
+* Web framework: Spring-Boot enabled Spring-WebMVC, Using Spring Rest Conntrollers.
+
+* Persistence Access: Spring-Data-Neo4j ( using Neo4j-OGM under the hood ).
+
+* Database: Neo4j-Server 3.5.1
+
+* Build tools and dependency managment : Maven
+
+* Deployment : Using Dockerfile and Docker-compose to deploy the project
+
+
 ## Spring Boot and Spring Data Neo4j
 
 Spring Data Neo4j is core part of the Spring Data project which aims to provide convenient data access for NoSQL databases.
 It uses Neo4j-OGM (ike Spring Data JPA uses JPA) under the hood and provides functionality known from the Spring Data world, like repositories, derived finders or auditing.
 it offers advanced features to map annotated entity classes to the Neo4j Graph Database.
 
-## Highlight Implementations:
+## Highlight Implementations
+
 Following block code are the core of implementations
-### Node and NodeInfo Data Models:
-```java
+
+### Node and NodeInfo Data Models
+
+Node Entity which persists in neo4j database server (using neo4j ogm )
+
+```
 @NodeEntity
 public class Node {	
 	@Id
@@ -76,8 +98,23 @@ public class Node {
 }
 ```
 
-### Repository and queries:
-```SQL
+Node information which transferd via REST to the client
+
+```
+public class NodeInfo {
+	private Long nodeId;
+	private String rootName;
+	private String parentName;
+	private Integer height;
+}
+```
+
+Basic queries which used to do actions such as 
+* get parent of given node
+* get children of given node
+* delete relations of current node in order to change parent of given node 
+
+```
 Node findByName(@Param("name") String title);
 
 @Query("MATCH (p)-[r:child_rel]->(n) WHERE n.name = {name} RETURN p")
@@ -89,3 +126,4 @@ Collection<Node> getChildren(@Param("name") String name);
 @Query("MATCH ()-[r:child_rel]-(n) WHERE n.name = {name} DELETE r")
 Collection<Node> deleteRelation(@Param("name") String name);
 ```
+
