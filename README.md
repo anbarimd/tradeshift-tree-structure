@@ -150,6 +150,12 @@ bf98f6ab60e8        tradeshift-tree-structure_springboot           0.0.0.0:8085-
 ## Endpoints
 We have some GET api for doing actions:
 
+### populate db with random binary tree 
+```
+ curl -H 'Content-Type: application/json' -X GET http://192.168.80.129:8085/populateDB?nodeNum=10
+```
+
+result
 
 
 
